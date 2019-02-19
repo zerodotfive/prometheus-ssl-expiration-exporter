@@ -1,0 +1,42 @@
+hash: 7f4f4595660ed3551bd8043969ff688f5076fea9118ec9aa3bbb3f6aea9b9195
+updated: 2019-02-15T16:14:55.977787011+02:00
+imports:
+- name: github.com/beorn7/perks
+  version: 3a771d992973f24aa725d07868b467d1ddfceafb
+  subpackages:
+  - quantile
+- name: github.com/golang/protobuf
+  version: c823c79ea1570fb5ff454033735a8e68575d1d0f
+  subpackages:
+  - proto
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c182affec369e30f25d3eb8cd8a478dee585ae7d
+  subpackages:
+  - pbutil
+- name: github.com/prometheus/client_golang
+  version: 4c99dd66303a54cbf8559dd6110d5c30b1819e4c
+  subpackages:
+  - prometheus
+  - prometheus/internal
+  - prometheus/promhttp
+- name: github.com/prometheus/client_model
+  version: fd36f4220a901265f90734c3183c5f0c91daa0b8
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: f866ba39776a736ba5d34760f5fae4ad74e63f2e
+  subpackages:
+  - expfmt
+  - internal/bitbucket.org/ww/goautoneg
+  - model
+- name: github.com/prometheus/procfs
+  version: f8d8b3f739bd91a7c0462cb55235ef63c79c9abc
+  subpackages:
+  - internal/util
+  - nfs
+  - xfs
+- name: github.com/spf13/pflag
+  version: 24fa6976df40757dce6aea913e7b81ade90530e1
+- name: gopkg.in/yaml.v2
+  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
+testImports: []
