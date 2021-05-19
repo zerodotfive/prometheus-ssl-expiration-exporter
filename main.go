@@ -25,6 +25,7 @@ const (
 // SslCheck ...
 type SslCheck struct {
 	Address string `json:"address"`
+	Domain string `json:"domain"`
 	Port    string `json:"port"`
 }
 
@@ -40,6 +41,17 @@ type SslExpirationExporter struct {
 	checkError    prometheus.Gauge
 }
 
+// constructor function
+func(params *SslCheck) defaults(){
+    // setting domain to addres if not specified
+    if params.Domain == "" {
+        params.Domain = params.Address
+    }
+    if params.Port == "" {
+        params.Port = "443"
+    }
+}
+
 func (s *SslExpirationExporter) getStatus() ([]byte, error) {
 	return []byte(""), nil
 }
@@ -53,25 +65,25 @@ func CreateExporters(s SslCheck, checkTimeout time.Duration) (*SslExpirationExpo
 			Namespace:   namespace,
 			Name:        "seconds_left",
 			Help:        "seconds left to expiration",
-			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port)},
+			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port), "domain": fmt.Sprintf("%s", s.Domain)},
 		}),
 		daysLeft: prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace:   namespace,
 			Name:        "days_left",
 			Help:        "days left to expiration",
-			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port)},
+			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port), "domain": fmt.Sprintf("%s", s.Domain)},
 		}),
 		daysLeftRound: prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace:   namespace,
 			Name:        "days_left_round",
 			Help:        "days left to expiration round",
-			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port)},
+			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port), "domain": fmt.Sprintf("%s", s.Domain)},
 		}),
 		checkError: prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace:   namespace,
 			Name:        "check_error",
 			Help:        "check error",
-			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port)},
+			ConstLabels: prometheus.Labels{"instance": fmt.Sprintf("%s:%s", s.Address, s.Port), "domain": fmt.Sprintf("%s", s.Domain)},
 		}),
 	}, nil
 }
@@ -91,7 +103,7 @@ func doCheck(s *SslCheck, checkTimeout time.Duration) (time.Duration, error) {
 	}
 	defer conn.Close()
 	config := &tls.Config{
-		ServerName:         s.Address,
+		ServerName:         s.Domain,
 		InsecureSkipVerify: true,
 	}
 	c := tls.Client(conn, config)
@@ -197,6 +209,7 @@ func main() {
 	}
 
 	for check := range checklist {
+	    checklist[check].defaults()
 		exporter, err := CreateExporters(checklist[check], checkTimeout)
 		if err != nil {
 			log.Fatal(err)
