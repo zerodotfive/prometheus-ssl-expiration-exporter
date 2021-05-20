@@ -1,3 +1,4 @@
 ---
-- address: google.com
-  port: 443
+- address: google.com # Required
+  domain: google.com  # Optional, default: address
+  port: 443           # Optional, default: 443
